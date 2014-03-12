@@ -1,0 +1,23 @@
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav pull-left">
+          <a class="blog-nav-item active" href="#">Home</a>
+          <a class="blog-nav-item" href="#">New features</a>
+          <a class="blog-nav-item" href="#">Press</a>
+          <a class="blog-nav-item" href="#">New hires</a>
+          <a class="blog-nav-item" href="#">About</a>
+        </nav>
+        {{#if currentUser}}
+        <nav class="blog-nav pull-right">
+          <a href="#" class="blog-nav-item">{{currentUser.screen_name}}({{currentUser.email}})</a>
+          <a href="/signout" class="blog-nav-item">Sign Out</a>
+        </nav>
+        {{else}}
+        <nav class="blog-nav pull-right">
+          <a href="/signin" class="blog-nav-item">Sign In</a>
+          <a href="/signup" class="blog-nav-item">Sign Up</a>
+        </nav>
+        {{/if}}
+      </div>
+    </div>

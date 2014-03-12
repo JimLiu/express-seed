@@ -1,0 +1,29 @@
+{
+  "name": "Express-seed",
+  "version": "0.1.0",
+  "homepage": "https://github.com/JimLiu/express-seed",
+  "authors": [
+    "Jim Liu <junminliu@gmail.com>"
+  ],
+  "description": "An empty website using nodejs + express + handlerbars + sass + bower + grunt + mysql. ",
+  "keywords": [
+    "forum"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "*",
+    "jquery": "*",
+    "moment": "*",
+    "angular-route": "*",
+    "angular-resource": "*",
+    "bootstrap": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

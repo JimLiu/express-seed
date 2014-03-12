@@ -6,10 +6,15 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.log
 
 pids
 logs
 results
 
-npm-debug.log
+.sass-cache
+
 node_modules
+bower_components
+logs
+
