@@ -1,6 +1,6 @@
 var moment        = require('moment'),
     base          = require('./base'),
-    dp            = require('../data_provider'),
+    dp            = require('../data_providers'),
     logger        = require('../logger'),
     errors        = require('../errorHandling'),
     User          = {};
