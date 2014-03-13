@@ -1,6 +1,6 @@
 var moment        = require('moment'),
     base          = require('./base'),
-    db            = require('../db'),
+    dp            = require('../data_provider'),
     logger        = require('../logger'),
     errors        = require('../errorHandling'),
     User          = {};
@@ -13,11 +13,11 @@ User.create = function(email, password, screenName, callback) {
     screen_name: screenName,
   };
 
-  db.User.create(user, User.get, callback);
+  dp.User.create(user, User.get, callback);
 };
 
 User.getUsers = function(ids, callback) {
-  db.User.getUsers(ids, function(err, users) {
+  dp.User.getUsers(ids, function(err, users) {
     if (err) {
       callback(err);
     } else {
@@ -35,7 +35,7 @@ User.get = function(id, callback) {
 };
 
 User.validate = function(email, password, callback) {
-  db.User.validate(email, password, function(err, id) {
+  dp.User.validate(email, password, function(err, id) {
     if (err) {
       callback(err);
     } else {
@@ -46,7 +46,7 @@ User.validate = function(email, password, callback) {
 
 
 User.findByToken = function(token, callback) {
-  db.User.findByToken(token, function(err, userId) {
+  dp.User.findByToken(token, function(err, userId) {
     if (err) {
       callback(err);
     } else {
@@ -56,7 +56,7 @@ User.findByToken = function(token, callback) {
 };
 
 User.saveToken = function(token, callback) {
-  db.User.saveToken(token, callback);
+  dp.User.saveToken(token, callback);
 };
 
 module.exports = User;
