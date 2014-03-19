@@ -9,7 +9,7 @@ config = {
       port: "8889",
       user: "root",
       password: "root",
-      database: "test",
+      database: "express-seed",
       multipleStatements: true
     }
   },

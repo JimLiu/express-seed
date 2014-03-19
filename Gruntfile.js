@@ -57,6 +57,7 @@ module.exports = function(grunt) {
       },
       livereload: {
         files: [
+          'gruntfile.js',
           '<%= paths.assets %>/css/*.css',
           '<%= paths.assets %>/img/**/*',
           '<%= paths.views %>/**/*.hbs',
@@ -265,6 +266,29 @@ module.exports = function(grunt) {
         options: {
           copy: false
         }
+      }
+    },
+    blanket: {
+      coverage: {
+        src: ['server/'],
+        dest: 'coverage/server/'
+      }
+    },
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+          require: 'coverage/blanket'
+        },
+        src: ['test/**/*.js']
+      },
+      coverage: {
+        options: {
+          reporter: 'html-cov',
+          quiet: true,
+          captureFile: 'coverage.html'
+        },
+        src: ['test/**/*.js']
       }
     }
   });

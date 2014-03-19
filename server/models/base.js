@@ -106,4 +106,41 @@ utils.getObject = function(id, getObjectsByIds, callback) {
   });
 };
 
+utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPropertyIdFunc, getPropertyObjectIdFunc, setPropertyFunc, callback) {
+  if (!objs || objs.length === 0) {
+    callback(null, objs);
+    return;
+  }
+
+  var ids = [];
+  // get all the object ids
+  for (var i = 0; i < objs.length; i++) {
+    ids.push(getPropertyIdFunc(objs[i]));
+  }
+
+  // get objects by object ids
+  getPropertyObjectsByIdsFunc(ids, function(err, propertyObjects) { //get the authors for objects
+    if (err) {
+      callback(err);
+    } else {
+      var objectMap = {};
+      for (var j = 0; j < propertyObjects.length; j++) {
+        objectMap[getPropertyObjectIdFunc(propertyObjects[j])] = propertyObjects[j];
+      }
+      for (var i = 0; i < objs.length; i++) {
+        var obj = objs[i];
+        var id = getPropertyIdFunc(obj);
+        var propertyObj = objectMap[id];
+        if (!propertyObj) {
+          propertyObj = null;
+          console.log("Can't find property by id: " + id);
+        }
+        setPropertyFunc(obj, propertyObj); //set property for object
+      }
+      callback(null, objs);
+    }
+  });
+};
+
+
 module.exports = utils;
