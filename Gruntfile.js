@@ -215,7 +215,7 @@ module.exports = function(grunt) {
           ]
         },
         exclude: [
-          
+
         ]
       },
       client: {
@@ -233,7 +233,7 @@ module.exports = function(grunt) {
           src: '<%= paths.clientjs %>/**/*.js'
         },
         exclude: [
-          
+
         ]
       },
       shared: {
@@ -278,7 +278,7 @@ module.exports = function(grunt) {
       test: {
         options: {
           reporter: 'spec',
-          require: 'coverage/blanket'
+          require: 'test/coverage/blanket'
         },
         src: ['test/**/*.js']
       },
