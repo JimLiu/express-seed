@@ -4,6 +4,9 @@ var moment        = require('moment'),
     errors        = require('../errorHandling'),
     Tag           = {};
 
+Tag.saveTags = function(tags, callback) {
+	db.saveTags('tags', 'tag', tags, callback);
+};
 
 
 module.exports = Tag;

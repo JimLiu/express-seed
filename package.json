@@ -7,10 +7,12 @@
     "start": "node server/app.js"
   },
   "homepage": "https://github.com/JimLiu/express-seed",
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/mit-license.php"
-  }],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/JimLiu/express-seed"
@@ -39,7 +41,8 @@
     "colors": "~0.6.2",
     "node-polyglot": "~0.3.0",
     "mysql": "~2.1.0",
-    "express-validator": "~2.1.0"
+    "express-validator": "~2.1.0",
+    "async": "~0.2.10"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

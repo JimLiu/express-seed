@@ -1,4 +1,5 @@
-var utils = {};
+var async = require('async'),
+  utils = {};
 
 utils.getObjectsByIds = function(ids, getObjectsByIds, getIdFromObject, callback) {
   if (arguments.length == 3) {
@@ -139,6 +140,58 @@ utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPro
       }
       callback(null, objs);
     }
+  });
+};
+
+
+utils.saveTags = function(object, tagNames, getTagNameFunc, getObjectTagsAsyncFunc, removeTagsAsyncFunc, addTagsAsyncFunc, callback) {
+  var toBeRemovedTags = [];
+  var toBeAddedTags = [];
+  var newTagNameMap = {};
+  var oldTagNameMap = {};
+  for (var i = 0; i < tagNames.length; i++) {
+    var tagName = tagNames[i];
+    if (!tagName || tagName.trim().length === 0) {
+      continue;
+    }
+    tagName = tagName.trim().toLowerCase();
+    newTagNameMap[tagName] = tagName;
+  }
+
+  getObjectTagsAsyncFunc(object, function(err, tags) {
+    if (err) {
+      return callback(err);
+    }
+    for (var i = 0; i < tags.length; i++) {
+      var tag = tags[i];
+      var tagName = getTagNameFunc(tag).toLowerCase();
+      oldTagNameMap[tagName] = tagName;
+      if (!newTagNameMap[tagName]) { // 移除
+        toBeRemovedTags.push(tagName);
+      }
+    }
+    for (var tagName in newTagNameMap) {
+      if (!oldTagNameMap[tagName]) { // 新增
+        toBeAddedTags.push(tagName);
+      }
+    }
+    async.series([
+      function(callback) {
+        removeTagsAsyncFunc(object, toBeRemovedTags, callback);
+      },
+      function(callback) {
+        addTagsAsyncFunc(object, toBeAddedTags, callback);
+      },
+      function(callback) {
+        getObjectTagsAsyncFunc(object, callback);
+      }
+    ], function(err, results) {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, results[2]);
+      }
+    });
   });
 };
 

@@ -18,3 +18,5 @@ node_modules
 bower_components
 logs
 built
+
+coverage.html

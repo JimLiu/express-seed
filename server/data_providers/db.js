@@ -21,7 +21,8 @@ db.connect = function() {
 
 db.executeQuery = function(sql, params, callback) {
   var con = db.connect();
-  con.query(sql, params, function(err, results) {
+
+  var query = con.query(sql, params, function(err, results) {
     if (err) {
       logger.error(err);
       callback(err);
@@ -29,6 +30,7 @@ db.executeQuery = function(sql, params, callback) {
       callback(null, results);
     }
   });
+  //console.log(query.sql);
   con.end();
 };
 
@@ -97,15 +99,8 @@ db.executeQueryWithParamsAndIds = function(sql, params, ids, callback) {
     callback(null, []);
     return;
   }
-  var queryStr,
-    idParams = [];
-  for (var i = 0; i < ids.length; i++) {
-    idParams.push('?');
-    params.push(ids[i]);
-  }
-
-  queryStr = sql.replace("@ids", idParams.join(', '));
-  db.executeQuery(queryStr, params, callback);
+  params.push(ids);
+  db.executeQuery(sql, params, callback);
 };
 
 db.getObjectsByParamsAndIds = function(sql, params, ids, callback) {
@@ -139,7 +134,6 @@ db.getCountAndIds = function(countQueryStr, idsQueryStr, params, pageIndex, page
     }
   });
 };
-
 
 db.updateFields = function(tableName, idColumnName, idValue, fields, callback) {
 
@@ -183,5 +177,48 @@ db.count = function(sql, params, callback) {
     }
   });
 };
+
+db.saveTags = function(tableName, columnName, tags, callback) {
+
+  var queryStr = "select ?? from ?? where ?? in (?)";
+  db.executeQuery(queryStr, [columnName, tableName, columnName, tags], function(err, results) {
+    if (err) {
+      callback(err);
+    } else {
+      var filtedTags = tags.slice(0);
+      for (var i = 0; i < results.length; i++) {
+        var tag = results[i][columnName];
+        var index = filtedTags.indexOf(tag);
+        if (index > -1) {
+          filtedTags.splice(index, 1);
+        }
+      }
+      if (filtedTags.length > 0) {
+        var newTags = [];
+        filtedTags.forEach(function(tag) {
+          newTags.push([tag, 0]);
+        });
+        queryStr = "insert into ?? (??, count) values ?";
+        db.executeQuery(queryStr, [tableName, columnName, newTags], callback);
+      } else {
+        callback(null, true);
+      }
+    }
+  });
+};
+
+/*
+db.saveTags = function(callback) {
+
+  var queryStr = "UPDATE tags t, posts_tags pt \
+        SET t.count = t.count - 1 \
+        WHERE pt.tag_id = t.id \
+        AND pt.post_id = 1;";
+  queryStr = "DELETE FROM posts_tags where post_id = 1;
+
+INSERT INTO posts_tags values (1, 1), (2,1)";
+
+};
+*/
 
 module.exports = db;

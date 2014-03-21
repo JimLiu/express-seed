@@ -46,7 +46,7 @@ User.update = function(userId, fields, callback) {
 };
 
 User.getUsers = function(ids, callback) {
-  var queryStr = "SELECT * FROM users WHERE id IN (@ids)";
+  var queryStr = "SELECT * FROM users WHERE id IN (?)";
   db.getObjectsByIds(queryStr, ids, function(err, users) {
     if (err) {
       callback(err);

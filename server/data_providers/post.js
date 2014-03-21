@@ -12,13 +12,12 @@ Post.create = function(post, getPost, callback) {
   db.insertQuery(queryStr, params, getPost, callback);
 };
 
-
 Post.update = function(id, fields, callback) {
   db.updateFields('posts', 'id', id, fields, callback);
 };
 
 Post.getPosts = function(ids, callback) {
-  var queryStr = "SELECT * FROM posts WHERE id IN (@ids)";
+  var queryStr = "SELECT * FROM posts WHERE id IN (?)";
   db.getObjectsByIds(queryStr, ids, function(err, posts) {
     if (err) {
       callback(err);
@@ -29,4 +28,3 @@ Post.getPosts = function(ids, callback) {
 };
 
 module.exports = Post;
-
