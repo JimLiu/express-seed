@@ -107,10 +107,81 @@ utils.getObject = function(id, getObjectsByIds, callback) {
   });
 };
 
+utils.getObjectTagsMap = function(ids, getObjectIdsAndTagIdsAsyncFunc, getTagsAsncFunc, callback) {
+  getObjectIdsAndTagIdsAsyncFunc(ids, function(err, objAndTagIds) {
+    if (err) {
+      callback(err);
+    } else {
+      var tagIds = [];
+      var objId2TagIds = {};
+      for (var i = 0; i < objAndTagIds.length; i++) {
+        var objIdAndTagId = objAndTagIds[i];
+        var objId = objIdAndTagId[Object.keys(objIdAndTagId)[0]]; // the first one is object id
+        var tagId = objIdAndTagId[Object.keys(objIdAndTagId)[1]]; // the second one is tag id
+        tagIds.push(tagId);
+
+        if (!objId2TagIds[objId]) {
+          objId2TagIds[objId] = [];
+        }
+        objId2TagIds[objId].push(tagId);
+      }
+      getTagsAsncFunc(tagIds, function(err, tags) {
+        if (err) {
+          callback(err);
+        } else {
+          var tagsMap = {};
+          for (var i = 0; i < tags.length; i++) {
+            var tag = tags[i];
+            tagsMap[tag.id] = tag;
+          }
+          var objIdTagsMap = {};
+          for (var objId in objId2TagIds) {
+            objIdTagsMap[objId] = [];
+            var tagIds = objId2TagIds[objId];
+            for (var j = 0; j < tagIds.length; j++) {
+              var tagId = tagIds[j];
+              if (tagsMap[tagId]) {
+                objIdTagsMap[objId].push(tagsMap[tagId]);
+              }
+            }
+          }
+          callback(null, objIdTagsMap);
+        }
+      });
+    }
+  });
+};
+
+utils.setTagsForObjects = function(objs, getObjectIdFunc, getObjectTagsMapAsyncFunc, setTagsForObject, callback) {
+  if (!objs || objs.length === 0) {
+    return callback(null, objs);
+  }
+  var ids = [];
+  var objMap = {};
+  // get all the object ids
+  for (var i = 0; i < objs.length; i++) {
+    var id = getObjectIdFunc(objs[i]);
+    ids.push(id);
+    objMap[id] = objs[i];
+  }
+  getObjectTagsMapAsyncFunc(ids, function(err, objTagsMap) {
+    if (err) {
+      callback(err);
+    } else {
+      for (var objId in objTagsMap) {
+        var obj = objMap[objId];
+        if (obj) {
+          setTagsForObject(obj, objTagsMap[objId]);
+        }
+      }
+      callback(null, objs);
+    }
+  });
+};
+
 utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPropertyIdFunc, getPropertyObjectIdFunc, setPropertyFunc, callback) {
   if (!objs || objs.length === 0) {
-    callback(null, objs);
-    return;
+    return callback(null, objs);
   }
 
   var ids = [];

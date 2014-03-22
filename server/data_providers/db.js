@@ -219,7 +219,6 @@ db.saveObjectTags = function(id, tagIds, tagTable, tagIdColumn, objectsTagsTable
     var queryStr = "UPDATE ?? t, ?? ot SET t.count = t.count - 1 WHERE ot.?? = t.id AND ot.?? = ?";
     var params = [tagTable, objectsTagsTable, tagIdColumn, objectIdColumn, id];
     connection.query(queryStr, params, function(err, result) {
-      console.log(err, result);
       if (err) { 
         connection.rollback(function() {
           return callback(err);

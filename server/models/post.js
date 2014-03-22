@@ -1,4 +1,5 @@
 var moment        = require('moment'),
+    async         = require('async'),
     base          = require('./base'),
     User          = require('./user'),
     Tag           = require('./tag'),
@@ -17,13 +18,40 @@ Post.getPosts = function(ids, callback) {
     if (err) {
       callback(err);
     } else {
-      Post.setUserForPosts(posts, callback);
+      async.parallel([
+        function(callback) {
+          Post.setUserForPosts(posts, callback);
+        },
+        function(callback) {
+          Post.setTagsForPosts(posts, callback);
+        }
+      ], function(err, results) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, posts);
+        }
+      });
     }
   });
 };
 
 Post.get = function(id, callback) {
   base.getObject(id, Post.getPosts, callback);
+};
+
+Post.getPostTags = function(ids, callback) {
+  base.getObjectTagsMap(ids, dp.Post.getTagIds, Tag.getTags, callback);
+};
+
+Post.setTagsForPosts = function(posts, callback) {
+  var getObjectIdFunc = function(post) {
+    return post.id;
+  };
+  var setTagsForObject = function(post, tags) {
+    post.tags = tags;
+  };
+  base.setTagsForObjects(posts, getObjectIdFunc, Post.getPostTags, setTagsForObject, callback);
 };
 
 Post.setUserForPosts = function(posts, callback) {

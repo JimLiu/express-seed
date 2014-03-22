@@ -25,4 +25,9 @@ Post.saveTags = function(id, tagIds, callback) {
   db.saveObjectTags(id, tagIds, 'tags', 'tag_id', 'posts_tags', 'post_id', callback);
 };
 
+Post.getTagIds = function(ids, callback) {
+  var queryStr = "SELECT post_id, tag_id FROM posts_tags WHERE post_id in (?)";
+  db.executeQuery(queryStr, [ids], callback);
+};
+
 module.exports = Post;

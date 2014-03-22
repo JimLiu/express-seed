@@ -61,10 +61,15 @@ describe('models/post', function() {
                     moment().format("YY-MM-DD HH:mm"), moment().format("YYYY-MM-DD HH:mm:ss"),
                     moment().format("YY-MM-DD HH:mm:ss")];
         models.Post.saveTags(post, tagNames, function(err, result) {
-
-          console.log(err, result);
           should.not.exist(err);
-          done();
+          models.Post.get(post.id, function(err, newPost) {
+            should.not.exist(err);
+            console.log(newPost);
+            should.exist(newPost.tags);
+            newPost.tags.length.should.equal(4);
+            done();
+          });
+          
         });
       });
     });
