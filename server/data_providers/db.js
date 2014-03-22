@@ -178,7 +178,10 @@ db.count = function(sql, params, callback) {
   });
 };
 
-db.saveTags = function(tableName, columnName, tags, callback) {
+// db helpers for tag related tables
+//
+
+db.saveTags = function(tags, tableName, columnName, callback) {
 
   var queryStr = "select ?? from ?? where ?? in (?)";
   db.executeQuery(queryStr, [columnName, tableName, columnName, tags], function(err, results) {
@@ -205,6 +208,66 @@ db.saveTags = function(tableName, columnName, tags, callback) {
       }
     }
   });
+};
+
+db.saveObjectTags = function(id, tagIds, tagTable, tagIdColumn, objectsTagsTable, objectIdColumn, callback) {
+  var connection = db.connect();
+  connection.beginTransaction(function(err) {
+    if (err) { 
+      return callback(err);
+    }
+    var queryStr = "UPDATE ?? t, ?? ot SET t.count = t.count - 1 WHERE ot.?? = t.id AND ot.?? = ?";
+    var params = [tagTable, objectsTagsTable, tagIdColumn, objectIdColumn, id];
+    connection.query(queryStr, params, function(err, result) {
+      console.log(err, result);
+      if (err) { 
+        connection.rollback(function() {
+          return callback(err);
+        });
+      }
+      queryStr = "DELETE FROM ?? where ?? = ?";
+      params = [objectsTagsTable, objectIdColumn, id];
+      connection.query(queryStr, params, function(err, result) {
+        if (err) { 
+          connection.rollback(function() {
+            return callback(err);
+          });
+        }
+        queryStr = "INSERT INTO ?? (??, ??) values ?";
+        var objsInserted = [];
+        tagIds.forEach(function(tagId) {
+          objsInserted.push([id, tagId]);
+        });
+        params = [objectsTagsTable, objectIdColumn, tagIdColumn, objsInserted];
+        connection.query(queryStr, params, function(err, result) {
+          if (err) { 
+            connection.rollback(function() {
+              return callback(err);
+            });
+          }
+          queryStr = "UPDATE ?? t, ?? ot SET t.count = t.count + 1 WHERE ot.?? = t.id AND ot.?? = ?";
+          params = [tagTable, objectsTagsTable, tagIdColumn, objectIdColumn, id];
+          connection.query(queryStr, params, function(err, result) {
+            if (err) { 
+              connection.rollback(function() {
+                return callback(err);
+              });
+            }
+            connection.commit(function(err) {
+              if (err) { 
+                connection.rollback(function() {
+                  throw err;
+                });
+              }
+              console.log('success!');
+              callback(null, result);
+            });
+          });
+        });
+      });
+    });
+  });
+  //connection.end();
 };
 
 /*

@@ -12,7 +12,6 @@ describe('models/tag', function() {
       models.Tag.saveTags(tags, function(err, result) {
         should.not.exist(err);
         should.exist(result);
-        console.log(result);
         done();
       });
     });

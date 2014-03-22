@@ -1,6 +1,7 @@
 var moment        = require('moment'),
     base          = require('./base'),
     User          = require('./user'),
+    Tag           = require('./tag'),
     dp            = require('../data_providers'),
     logger        = require('../logger'),
     errors        = require('../errorHandling'),
@@ -39,6 +40,8 @@ Post.setUserForPosts = function(posts, callback) {
     getPropertyObjectIdFunc, setPropertyFunc, callback);
 };
 
-
+Post.saveTags = function(post, tagNames, callback) {
+  base.saveObjectTags(post.id, tagNames, Tag.saveTags, Tag.getTagIds, dp.Post.saveTags, callback);
+};
 
 module.exports = Post;

@@ -143,7 +143,7 @@ utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPro
   });
 };
 
-
+/*
 utils.saveTags = function(object, tagNames, getTagNameFunc, getObjectTagsAsyncFunc, removeTagsAsyncFunc, addTagsAsyncFunc, callback) {
   var toBeRemovedTags = [];
   var toBeAddedTags = [];
@@ -194,6 +194,22 @@ utils.saveTags = function(object, tagNames, getTagNameFunc, getObjectTagsAsyncFu
     });
   });
 };
+*/
 
+utils.saveObjectTags = function(id, tagNames, saveTagsAsyncFunc, getTagIdsAsyncFunc, saveObjectTagsAsyncFunc, callback) {
+  saveTagsAsyncFunc(tagNames, function(err, result) {
+    if (err) {
+      callback(err);
+    } else {
+      getTagIdsAsyncFunc(tagNames, function(err, tagIds) {
+        if (err) {
+          callback(err);
+        } else {
+          saveObjectTagsAsyncFunc(id, tagIds, callback);
+        }
+      });
+    }
+  });
+};
 
 module.exports = utils;

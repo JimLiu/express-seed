@@ -18,13 +18,11 @@ Post.update = function(id, fields, callback) {
 
 Post.getPosts = function(ids, callback) {
   var queryStr = "SELECT * FROM posts WHERE id IN (?)";
-  db.getObjectsByIds(queryStr, ids, function(err, posts) {
-    if (err) {
-      callback(err);
-    } else {
-      callback(null, posts);
-    }
-  });
+  db.getObjectsByIds(queryStr, ids, callback);
+};
+
+Post.saveTags = function(id, tagIds, callback) {
+  db.saveObjectTags(id, tagIds, 'tags', 'tag_id', 'posts_tags', 'post_id', callback);
 };
 
 module.exports = Post;
