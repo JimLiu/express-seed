@@ -267,18 +267,12 @@ utils.saveTags = function(object, tagNames, getTagNameFunc, getObjectTagsAsyncFu
 };
 */
 
-utils.saveObjectTags = function(id, tagNames, saveTagsAsyncFunc, getTagIdsAsyncFunc, saveObjectTagsAsyncFunc, callback) {
-  saveTagsAsyncFunc(tagNames, function(err, result) {
+utils.saveObjectTags = function(id, tagNames, saveTagsAndGetIdsAsyncFunc, saveObjectTagsAsyncFunc, callback) {
+  saveTagsAndGetIdsAsyncFunc(tagNames, function(err, tagIds) {
     if (err) {
       callback(err);
     } else {
-      getTagIdsAsyncFunc(tagNames, function(err, tagIds) {
-        if (err) {
-          callback(err);
-        } else {
-          saveObjectTagsAsyncFunc(id, tagIds, callback);
-        }
-      });
+      saveObjectTagsAsyncFunc(id, tagIds, callback);
     }
   });
 };

@@ -6,12 +6,8 @@ var moment        = require('moment'),
     errors        = require('../errorHandling'),
     Tag           = {};
 
-Tag.saveTags = function(tagNames, callback) {
-  dp.Tag.saveTags(tagNames, callback);
-};
-
-Tag.getTagIds = function(tagNames, callback) {
-  dp.Tag.getTagIds(tagNames, callback);
+Tag.saveTagsAndGetIds = function(tagNames, callback) {
+  dp.Tag.saveTagsAndGetIds(tagNames, callback);
 };
 
 Tag.getTags = function(ids, callback) {

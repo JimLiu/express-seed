@@ -181,31 +181,40 @@ db.count = function(sql, params, callback) {
 // db helpers for tag related tables
 //
 
-db.saveTags = function(tags, tableName, columnName, callback) {
+db.getTagIds = function(tagNames, tableName, columnName, callback) {
+  var queryStr = "select id from ?? where ?? in (?)";
+  db.getIds(queryStr, [tableName, columnName, tagNames], callback);
+};
+
+db.saveTagsAndGetIds = function(tags, tableName, columnName, callback) {
 
   var queryStr = "select ?? from ?? where ?? in (?)";
   db.executeQuery(queryStr, [columnName, tableName, columnName, tags], function(err, results) {
     if (err) {
-      callback(err);
-    } else {
-      var filtedTags = tags.slice(0);
-      for (var i = 0; i < results.length; i++) {
-        var tag = results[i][columnName];
-        var index = filtedTags.indexOf(tag);
-        if (index > -1) {
-          filtedTags.splice(index, 1);
+      return callback(err);
+    } 
+    var filtedTags = tags.slice(0);
+    for (var i = 0; i < results.length; i++) {
+      var tag = results[i][columnName];
+      var index = filtedTags.indexOf(tag);
+      if (index > -1) {
+        filtedTags.splice(index, 1);
+      }
+    }
+    if (filtedTags.length > 0) {
+      var newTags = [];
+      filtedTags.forEach(function(tag) {
+        newTags.push([tag, 0]);
+      });
+      queryStr = "insert into ?? (??, count) values ?";
+      db.executeQuery(queryStr, [tableName, columnName, newTags], function(err, result) {
+        if (err) {
+          return callback(err);
         }
-      }
-      if (filtedTags.length > 0) {
-        var newTags = [];
-        filtedTags.forEach(function(tag) {
-          newTags.push([tag, 0]);
-        });
-        queryStr = "insert into ?? (??, count) values ?";
-        db.executeQuery(queryStr, [tableName, columnName, newTags], callback);
-      } else {
-        callback(null, true);
-      }
+        db.getTagIds(tags, tableName, columnName, callback);
+      });
+    } else {
+      db.getTagIds(tags, tableName, columnName, callback);
     }
   });
 };

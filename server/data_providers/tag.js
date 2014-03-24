@@ -4,13 +4,8 @@ var moment        = require('moment'),
     errors        = require('../errorHandling'),
     Tag           = {};
 
-Tag.saveTags = function(tagNames, callback) {
-  db.saveTags(tagNames, 'tags', 'tag', callback);
-};
-
-Tag.getTagIds = function(tagNames, callback) {
-  var queryStr = "select id from tags where tag in (?)";
-  db.getIds(queryStr, [tagNames], callback);
+Tag.saveTagsAndGetIds = function(tagNames, callback) {
+  db.saveTagsAndGetIds(tagNames, 'tags', 'tag', callback);
 };
 
 Tag.getTags = function(ids, callback) {

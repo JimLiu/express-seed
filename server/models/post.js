@@ -69,7 +69,7 @@ Post.setUserForPosts = function(posts, callback) {
 };
 
 Post.saveTags = function(post, tagNames, callback) {
-  base.saveObjectTags(post.id, tagNames, Tag.saveTags, Tag.getTagIds, dp.Post.saveTags, callback);
+  base.saveObjectTags(post.id, tagNames, Tag.saveTagsAndGetIds, dp.Post.saveTags, callback);
 };
 
 module.exports = Post;
