@@ -16,7 +16,7 @@ utils.getObjectsByIds = function(ids, getObjectsByIds, getIdFromObject, callback
       objectMap[id] = result;
     }
 
-    for (var j = 0; j < ids.length; i++) {
+    for (var j = 0; j < ids.length; j++) {
       var object = objectMap[ids[j]];
       if (object) {
         objects.push(object);
