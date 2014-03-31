@@ -30,4 +30,15 @@ Post.getTagIds = function(ids, callback) {
   db.executeQuery(queryStr, [ids], callback);
 };
 
+Post.getAllPosts = function(pageIndex, pageSize, callback) {
+  var countQueryStr = "SELECT COUNT(id) AS count FROM posts";
+  var idsQueryStr = "SELECT id FROM posts ORDER BY id DESC LIMIT ?, ?";
+  db.getCountAndIds(countQueryStr, idsQueryStr, [], pageIndex, pageSize, callback);
+};
+
+Post.getTopPosts = function(count, callback) {
+  var queryStr = "SELECT id FROM posts ORDER BY id DESC LIMIT 0, ?";
+  db.getIds(queryStr, [count], callback);
+};
+
 module.exports = Post;

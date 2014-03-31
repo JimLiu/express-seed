@@ -296,6 +296,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('init', ['shell:bourbon', 'default']);
+  grunt.registerTask('test', ['mochaTest']);
   grunt.registerTask('default', ['update_submodules', 'bower', 'sass:compress', 'concat']);
   grunt.registerTask('release', ['shell:bourbon', 'bower', 'sass:compress', 'concat', 'uglify', 'clean:release', 'copy:release']);
   grunt.registerTask('dev', ['sass:dev', 'concat:dev', 'express:dev', 'watch']);

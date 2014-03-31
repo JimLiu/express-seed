@@ -64,12 +64,22 @@ Post.setUserForPosts = function(posts, callback) {
   var setPropertyFunc = function(post, user) {
     post.author = user;
   };
-  base.setPropertyForObjects(posts, User.getUsers, getPropertyIdFunc, 
+  base.setPropertyForObjects(posts, User.getUsers, getPropertyIdFunc,
     getPropertyObjectIdFunc, setPropertyFunc, callback);
 };
 
 Post.saveTags = function(post, tagNames, callback) {
   base.saveObjectTags(post.id, tagNames, Tag.saveTagsAndGetIds, dp.Post.saveTags, callback);
+};
+
+Post.getAllPosts = function(pageIndex, pageSize, callback) {
+  base.getPaginationObjects(pageIndex, pageSize, dp.Post.getAllPosts, Post.getPosts, callback);
+};
+
+Post.getTopPosts = function(count, callback) {
+  base.getObjects(function(callback) {
+    dp.Post.getTopPosts(count, callback);
+  }, Post.getPosts, callback);
 };
 
 module.exports = Post;

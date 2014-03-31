@@ -26,6 +26,16 @@ utils.getObjectsByIds = function(ids, getObjectsByIds, getIdFromObject, callback
   });
 };
 
+utils.getObjects = function(getIds, getObjectsByIds, callback) {
+  getIds(function(err, ids) {
+    if (err) {
+      callback(err);
+    } else {
+      getObjectsByIds(ids, callback);
+    }
+  });
+};
+
 
 utils.calculateTotalPages = function(itemsPerPage, totalItems) {
   var totalPages = itemsPerPage < 1 ? 1 : Math.ceil(totalItems / itemsPerPage);
