@@ -2,19 +2,19 @@ var path = require('path'),
     config;
 
 config = {
-  database: {
-    client: 'mysql',
-    connection: {
-      host: "localhost",
-      port: "8889",
-      user: "root",
-      password: "root",
-      database: "express-seed",
-      multipleStatements: true
-    }
+  mysql: {
+    host: "localhost",
+    port: "8889",
+    user: "root",
+    password: "root",
+    database: "express-seed",
+    multipleStatements: true
+  },
+  cookie: {
+    secret: '3095cd1975c64b9f8ee24b5346a4e593'
   },
   session: {
-    secret: "1234567890QWERTY"
+    secret: '1234567890QWERTY'
   },
   mail: {
     transport: 'SMTP',
@@ -26,6 +26,12 @@ config = {
       }
     }
   },
+  i18n: {
+    locales: ['cn', 'en'],
+    defaultLocale: 'cn',
+    cookie: 'locale',
+    directory: "locales"
+  }
 };
 
 // Export config

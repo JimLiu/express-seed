@@ -1,7 +1,6 @@
 var moment        = require('moment'),
     db            = require('./db'),
     logger        = require('../logger'),
-    errors        = require('../errorHandling'),
     Post          = {};
 
 
@@ -19,15 +18,6 @@ Post.update = function(id, fields, callback) {
 Post.getPosts = function(ids, callback) {
   var queryStr = "SELECT * FROM posts WHERE id IN (?)";
   db.getObjectsByIds(queryStr, ids, callback);
-};
-
-Post.saveTags = function(id, tagIds, callback) {
-  db.saveObjectTags(id, tagIds, 'tags', 'tag_id', 'posts_tags', 'post_id', callback);
-};
-
-Post.getTagIds = function(ids, callback) {
-  var queryStr = "SELECT post_id, tag_id FROM posts_tags WHERE post_id in (?)";
-  db.executeQuery(queryStr, [ids], callback);
 };
 
 Post.getAllPosts = function(pageIndex, pageSize, callback) {

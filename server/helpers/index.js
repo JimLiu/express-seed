@@ -1,12 +1,12 @@
-var string = require('string'),
-  hbs = require('express-hbs'),
-  moment = require('moment'),
-  path = require('path'),
-  polyglot = require('node-polyglot').instance,
-  _ = require('lodash'),
+var string    = require('string'),
+  hbs         = require('express-hbs'),
+  moment      = require('moment'),
+  path        = require('path'),
+  i18n        = require('i18n'),
+  polyglot    = require('node-polyglot').instance,
+  _           = require('lodash'),
 
   config = require('../config'),
-  errors = require('../errorHandling'),
 
   assetTemplate = _.template('<%= source %>?v=<%= version %>'),
   scriptTemplate = _.template('<script type="text/javascript" src="<%= source %>?v=<%= version %>"></script>'),
@@ -120,6 +120,7 @@ var registerSiteHelpers = function(sitehbs) {
   sitehbs.registerHelper('encode', coreHelpers.encode);
 
   sitehbs.registerHelper('forumScriptTags', coreHelpers.forumScriptTags);
+
 };
 
 module.exports = coreHelpers;

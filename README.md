@@ -28,7 +28,7 @@ Run the commands below in the project root directory.
 #####2. Install Grunt and Bower
 
     $ sudo npm install -g grunt-cli bower
-    
+
 #####3. Install project dependencies
 
     $ npm install

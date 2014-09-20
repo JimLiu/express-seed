@@ -12,7 +12,7 @@ describe('models/user', function() {
         screenName: "screen_name-" + moment().unix()
       };
 
-      models.User.create(newUser.email, newUser.password, newUser.screenName, function(err, result) {
+      models.user.create(newUser.email, newUser.password, newUser.screenName, function(err, result) {
         should.not.exist(err);
         should.exist(result);
         result.status.should.equal('success');

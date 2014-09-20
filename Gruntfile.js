@@ -69,7 +69,7 @@ module.exports = function(grunt) {
       },
       express: {
         // Restart any time client or server js files change
-        files: ['server/app.js', 'server/**/*.js'],
+        files: ['server/bin/www', 'server/**/*.js'],
         tasks: ['express:dev'],
         options: {
           spawn: false
@@ -177,7 +177,7 @@ module.exports = function(grunt) {
     // Start our server in development
     express: {
       options: {
-        script: './server/app.js',
+        script: './server/bin/www',
         output: ".+"
       },
       dev: {

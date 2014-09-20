@@ -1,8 +1,7 @@
 var moment        = require('moment'),
     base          = require('./base'),
-    dp            = require('../data_providers'),
+    data          = require('../data'),
     logger        = require('../logger'),
-    errors        = require('../errorHandling'),
     User          = {};
 
 
@@ -13,11 +12,11 @@ User.create = function(email, password, screenName, callback) {
     screen_name: screenName,
   };
 
-  dp.User.create(user, User.get, callback);
+  data.user.create(user, User.get, callback);
 };
 
 User.getUsers = function(ids, callback) {
-  dp.User.getUsers(ids, function(err, users) {
+  data.user.getUsers(ids, function(err, users) {
     if (err) {
       callback(err);
     } else {
@@ -35,7 +34,7 @@ User.get = function(id, callback) {
 };
 
 User.validate = function(email, password, callback) {
-  dp.User.validate(email, password, function(err, id) {
+  data.user.validate(email, password, function(err, id) {
     if (err) {
       callback(err);
     } else {
@@ -46,7 +45,7 @@ User.validate = function(email, password, callback) {
 
 
 User.findByToken = function(token, callback) {
-  dp.User.findByToken(token, function(err, userId) {
+  data.user.findByToken(token, function(err, userId) {
     if (err) {
       callback(err);
     } else {
@@ -56,7 +55,7 @@ User.findByToken = function(token, callback) {
 };
 
 User.saveToken = function(token, callback) {
-  dp.User.saveToken(token, callback);
+  data.user.saveToken(token, callback);
 };
 
 

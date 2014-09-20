@@ -10,7 +10,7 @@ Support.createTestUser = function(callback) {
     screenName: "test-screen_name-" + moment().valueOf()
   };
 
-  models.User.create(newUser.email, newUser.password, newUser.screenName, callback);
+  models.user.create(newUser.email, newUser.password, newUser.screenName, callback);
 };
 
 

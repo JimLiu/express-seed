@@ -4,7 +4,7 @@
   "version": "0.1.2",
   "private": false,
   "scripts": {
-    "start": "node server/app.js"
+    "start": "node server/bin/www"
   },
   "homepage": "https://github.com/JimLiu/express-seed",
   "licenses": [
@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "express": "3.4.8",
+    "express": "~4.9.1",
     "lodash": "~2.4.1",
     "express-hbs": "0.7.6",
     "moment": "*",
@@ -40,15 +40,24 @@
     "mocha": "~1.17.1",
     "colors": "~0.6.2",
     "node-polyglot": "~0.3.0",
-    "mysql": "~2.1.0",
-    "express-validator": "~2.1.0",
-    "async": "~0.2.10"
+    "mysql": "~2.1.1",
+    "express-validator": "~2.1.2",
+    "async": "~0.2.10",
+    "morgan": "~1.3.1",
+    "cookie-parser": "~1.3.3",
+    "body-parser": "~1.8.2",
+    "i18n": "~0.5.0",
+    "express-session": "~1.8.2",
+    "validator": "~3.18.1",
+    "multer": "~0.1.4",
+    "debug": "~2.0.0",
+    "gravatar": "~1.0.6"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-compress": "~0.5.2",
+    "grunt-contrib-compress": "~0.11.0",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-handlebars": "~0.6.0",

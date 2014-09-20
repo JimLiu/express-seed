@@ -8,9 +8,9 @@
           <a class="blog-nav-item" href="#">New hires</a>
           <a class="blog-nav-item" href="#">About</a>
         </nav>
-        {{#if currentUser}}
+        {{#if _user}}
         <nav class="blog-nav pull-right">
-          <a href="#" class="blog-nav-item">{{currentUser.screen_name}}({{currentUser.email}})</a>
+          <a href="#" class="blog-nav-item">{{_user.screen_name}}({{_user.email}})</a>
           <a href="/signout" class="blog-nav-item">Sign Out</a>
         </nav>
         {{else}}

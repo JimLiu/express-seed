@@ -10,7 +10,7 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser(function(id, done) {
-    models.User.get(id, function(err, user) {
+    models.user.get(id, function(err, user) {
       done(null, user);
     });
   });
@@ -20,12 +20,13 @@ module.exports = function(passport) {
       passwordField: 'password'
     },
     function(email, password, done) {
-      models.User.validate(email, password, function(err, user) {
+      models.user.validate(email, password, function(err, result) {
         if (err) {
           done(null, null);
         } else {
-          done(null, user);
+          done(null, result);
         }
       });
-    }));
+    })
+  );
 };

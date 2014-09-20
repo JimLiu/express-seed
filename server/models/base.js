@@ -1,7 +1,7 @@
 var async = require('async'),
-  utils = {};
+  Base = {};
 
-utils.getObjectsByIds = function(ids, getObjectsByIds, getIdFromObject, callback) {
+Base.getObjectsByIds = function(ids, getObjectsByIds, getIdFromObject, callback) {
   if (arguments.length == 3) {
     callback = getIdFromObject;
     getIdFromObject = null;
@@ -26,7 +26,7 @@ utils.getObjectsByIds = function(ids, getObjectsByIds, getIdFromObject, callback
   });
 };
 
-utils.getObjects = function(getIds, getObjectsByIds, callback) {
+Base.getObjects = function(getIds, getObjectsByIds, callback) {
   getIds(function(err, ids) {
     if (err) {
       callback(err);
@@ -37,58 +37,35 @@ utils.getObjects = function(getIds, getObjectsByIds, callback) {
 };
 
 
-utils.calculateTotalPages = function(itemsPerPage, totalItems) {
+Base.calculateTotalPages = function(itemsPerPage, totalItems) {
   var totalPages = itemsPerPage < 1 ? 1 : Math.ceil(totalItems / itemsPerPage);
   return Math.max(totalPages || 0, 1);
 };
 
-utils.getPaginationObjects = function(params, pageIndex, pageSize, getCountAndIds, getObjectsByIds, callback) {
-  var _params, _pageIndex, _pageSize, _getCountAndIds, _getObjectsByIds;
-  var getCountAndIdsCallback = function(err, totalCount, ids) {
+Base.getPaginationObjects = function(pageIndex, pageSize, getCountAndIds, getObjectsByIds, callback) {
+  getCountAndIds(pageIndex, pageSize, function(err, totalCount, ids) {
     if (err) {
-      callback(err);
-    } else {
-      _getObjectsByIds(ids, function(err, results) {
-        if (err) {
-          callback(err);
-        } else {
-          var objectSet = {
-            pagination: {
-              page: _pageIndex + 1,
-              totalItems: totalCount,
-              itemsPerPage: _pageSize,
-              totalPages: utils.calculateTotalPages(_pageSize, totalCount),
-            },
-            items: results
-          };
-          callback(null, objectSet);
-        }
-      });
+      return callback(err);
     }
-  };
-
-  if (arguments.length == 5) {
-    _params = null;
-    _pageIndex = params;
-    _pageSize = pageIndex;
-    _getCountAndIds = pageSize;
-    _getObjectsByIds = getCountAndIds;
-    callback = getObjectsByIds;
-  } else {
-    _params = params;
-    _pageIndex = pageIndex;
-    _pageSize = pageSize;
-    _getCountAndIds = getCountAndIds;
-    _getObjectsByIds = getObjectsByIds;
-  }
-  if (!_params || _params.length === 0) {
-    _getCountAndIds(_pageIndex, _pageSize, getCountAndIdsCallback);
-  } else {
-    _getCountAndIds(_params, _pageIndex, _pageSize, getCountAndIdsCallback);
-  }
+    getObjectsByIds(ids, function(err, results) {
+      if (err) {
+        return callback(err);
+      }
+      var objectSet = {
+        pagination: {
+          page: pageIndex + 1,
+          totalItems: totalCount,
+          itemsPerPage: pageSize,
+          totalPages: Base.calculateTotalPages(pageSize, totalCount),
+        },
+        items: results
+      };
+      callback(null, objectSet);
+    });
+  });
 };
 
-utils.getObjectsFromMaxId = function(params, maxId, count, getIds, getObjectsByIds, callback) {
+Base.getObjectsFromMaxId = function(params, maxId, count, getIds, getObjectsByIds, callback) {
   getIds(params, function(err, ids) {
     if (err) {
       callback(err);
@@ -103,7 +80,7 @@ utils.getObjectsFromMaxId = function(params, maxId, count, getIds, getObjectsByI
   });
 };
 
-utils.getObject = function(id, getObjectsByIds, callback) {
+Base.getObject = function(id, getObjectsByIds, callback) {
   getObjectsByIds([id], function(err, results) {
     if (err) {
       callback(err);
@@ -117,79 +94,17 @@ utils.getObject = function(id, getObjectsByIds, callback) {
   });
 };
 
-utils.getObjectTagsMap = function(ids, getObjectIdsAndTagIdsAsyncFunc, getTagsAsncFunc, callback) {
-  getObjectIdsAndTagIdsAsyncFunc(ids, function(err, objAndTagIds) {
+Base.getObjectByKey = function(getIdByKey, getObjectById, callback) {
+  getIdByKey(function(err, id) {
     if (err) {
-      callback(err);
-    } else {
-      var tagIds = [];
-      var objId2TagIds = {};
-      for (var i = 0; i < objAndTagIds.length; i++) {
-        var objIdAndTagId = objAndTagIds[i];
-        var objId = objIdAndTagId[Object.keys(objIdAndTagId)[0]]; // the first one is object id
-        var tagId = objIdAndTagId[Object.keys(objIdAndTagId)[1]]; // the second one is tag id
-        tagIds.push(tagId);
-
-        if (!objId2TagIds[objId]) {
-          objId2TagIds[objId] = [];
-        }
-        objId2TagIds[objId].push(tagId);
-      }
-      getTagsAsncFunc(tagIds, function(err, tags) {
-        if (err) {
-          callback(err);
-        } else {
-          var tagsMap = {};
-          for (var i = 0; i < tags.length; i++) {
-            var tag = tags[i];
-            tagsMap[tag.id] = tag;
-          }
-          var objIdTagsMap = {};
-          for (var objId in objId2TagIds) {
-            objIdTagsMap[objId] = [];
-            var tagIds = objId2TagIds[objId];
-            for (var j = 0; j < tagIds.length; j++) {
-              var tagId = tagIds[j];
-              if (tagsMap[tagId]) {
-                objIdTagsMap[objId].push(tagsMap[tagId]);
-              }
-            }
-          }
-          callback(null, objIdTagsMap);
-        }
-      });
+      return callback(err);
     }
+    getObjectById(id, callback);
   });
 };
 
-utils.setTagsForObjects = function(objs, getObjectIdFunc, getObjectTagsMapAsyncFunc, setTagsForObject, callback) {
-  if (!objs || objs.length === 0) {
-    return callback(null, objs);
-  }
-  var ids = [];
-  var objMap = {};
-  // get all the object ids
-  for (var i = 0; i < objs.length; i++) {
-    var id = getObjectIdFunc(objs[i]);
-    ids.push(id);
-    objMap[id] = objs[i];
-  }
-  getObjectTagsMapAsyncFunc(ids, function(err, objTagsMap) {
-    if (err) {
-      callback(err);
-    } else {
-      for (var objId in objTagsMap) {
-        var obj = objMap[objId];
-        if (obj) {
-          setTagsForObject(obj, objTagsMap[objId]);
-        }
-      }
-      callback(null, objs);
-    }
-  });
-};
 
-utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPropertyIdFunc, getPropertyObjectIdFunc, setPropertyFunc, callback) {
+Base.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPropertyIdFunc, getPropertyObjectIdFunc, setPropertyFunc, callback) {
   if (!objs || objs.length === 0) {
     return callback(null, objs);
   }
@@ -197,7 +112,16 @@ utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPro
   var ids = [];
   // get all the object ids
   for (var i = 0; i < objs.length; i++) {
-    ids.push(getPropertyIdFunc(objs[i]));
+    var id = getPropertyIdFunc(objs[i]);
+    if (id && id > 0) {
+      ids.push(id);
+    } else {
+      setPropertyFunc(objs[i], null);
+    }
+  }
+
+  if (ids.length === 0) {
+    return callback(null, objs);
   }
 
   // get objects by object ids
@@ -207,7 +131,11 @@ utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPro
     } else {
       var objectMap = {};
       for (var j = 0; j < propertyObjects.length; j++) {
-        objectMap[getPropertyObjectIdFunc(propertyObjects[j])] = propertyObjects[j];
+        var pid = getPropertyObjectIdFunc(propertyObjects[j]);
+        if (!pid || pid <= 0) {
+          continue;
+        }
+        objectMap[pid] = propertyObjects[j];
       }
       for (var i = 0; i < objs.length; i++) {
         var obj = objs[i];
@@ -215,7 +143,6 @@ utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPro
         var propertyObj = objectMap[id];
         if (!propertyObj) {
           propertyObj = null;
-          console.log("Can't find property by id: " + id);
         }
         setPropertyFunc(obj, propertyObj); //set property for object
       }
@@ -224,67 +151,6 @@ utils.setPropertyForObjects = function(objs, getPropertyObjectsByIdsFunc, getPro
   });
 };
 
-/*
-utils.saveTags = function(object, tagNames, getTagNameFunc, getObjectTagsAsyncFunc, removeTagsAsyncFunc, addTagsAsyncFunc, callback) {
-  var toBeRemovedTags = [];
-  var toBeAddedTags = [];
-  var newTagNameMap = {};
-  var oldTagNameMap = {};
-  for (var i = 0; i < tagNames.length; i++) {
-    var tagName = tagNames[i];
-    if (!tagName || tagName.trim().length === 0) {
-      continue;
-    }
-    tagName = tagName.trim().toLowerCase();
-    newTagNameMap[tagName] = tagName;
-  }
+module.exports = Base;
 
-  getObjectTagsAsyncFunc(object, function(err, tags) {
-    if (err) {
-      return callback(err);
-    }
-    for (var i = 0; i < tags.length; i++) {
-      var tag = tags[i];
-      var tagName = getTagNameFunc(tag).toLowerCase();
-      oldTagNameMap[tagName] = tagName;
-      if (!newTagNameMap[tagName]) { // 移除
-        toBeRemovedTags.push(tagName);
-      }
-    }
-    for (var tagName in newTagNameMap) {
-      if (!oldTagNameMap[tagName]) { // 新增
-        toBeAddedTags.push(tagName);
-      }
-    }
-    async.series([
-      function(callback) {
-        removeTagsAsyncFunc(object, toBeRemovedTags, callback);
-      },
-      function(callback) {
-        addTagsAsyncFunc(object, toBeAddedTags, callback);
-      },
-      function(callback) {
-        getObjectTagsAsyncFunc(object, callback);
-      }
-    ], function(err, results) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, results[2]);
-      }
-    });
-  });
-};
-*/
 
-utils.saveObjectTags = function(id, tagNames, saveTagsAndGetIdsAsyncFunc, saveObjectTagsAsyncFunc, callback) {
-  saveTagsAndGetIdsAsyncFunc(tagNames, function(err, tagIds) {
-    if (err) {
-      callback(err);
-    } else {
-      saveObjectTagsAsyncFunc(id, tagIds, callback);
-    }
-  });
-};
-
-module.exports = utils;
