@@ -1,10 +1,5 @@
-var user          = require('./user');
+var auth = require('./auth');
 
-
-exports.index = function(req, res) {
-  res.render('index', {
-    title: "My App"
-  });
+module.exports = {
+    auth: auth
 };
-
-exports.user = user;

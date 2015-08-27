@@ -1,7 +1,7 @@
-var user = require('./user'),
-	post = require('./post');
+var users = require('./users'),
+    posts = require('./posts');
 
 module.exports = {
-  user: user,
-  post: post,
+    users: users,
+    posts: posts,
 };

@@ -2,7 +2,6 @@ var string    = require('string'),
   hbs         = require('express-hbs'),
   moment      = require('moment'),
   path        = require('path'),
-  i18n        = require('i18n'),
   polyglot    = require('node-polyglot').instance,
   _           = require('lodash'),
 

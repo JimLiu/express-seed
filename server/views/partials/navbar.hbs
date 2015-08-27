@@ -2,15 +2,15 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav pull-left">
-          <a class="blog-nav-item active" href="#">Home</a>
+          <a class="blog-nav-item active" href="/">Home</a>
           <a class="blog-nav-item" href="#">New features</a>
           <a class="blog-nav-item" href="#">Press</a>
           <a class="blog-nav-item" href="#">New hires</a>
           <a class="blog-nav-item" href="#">About</a>
         </nav>
-        {{#if _user}}
+        {{#if session.user}}
         <nav class="blog-nav pull-right">
-          <a href="#" class="blog-nav-item">{{_user.screen_name}}({{_user.email}})</a>
+          <a href="#" class="blog-nav-item">{{session.user.screen_name}}({{session.user.email}})</a>
           <a href="/signout" class="blog-nav-item">Sign Out</a>
         </nav>
         {{else}}

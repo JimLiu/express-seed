@@ -1,7 +1,5 @@
-var auth            = require('./auth'),
-    passport        = require('./passport');
+var passport        = require('./passport');
 
 module.exports = {
-  auth: auth,
-  passport: passport
+    passport: passport
 };

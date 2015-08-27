@@ -5,28 +5,27 @@ var LocalStrategy = require('passport-local').Strategy,
 
 module.exports = function(passport) {
 
-  passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(function(id, done) {
-    models.user.get(id, function(err, user) {
-      done(null, user);
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
     });
-  });
 
-  passport.use(new LocalStrategy({
-      usernameField: 'email',
-      passwordField: 'password'
-    },
-    function(email, password, done) {
-      models.user.validate(email, password, function(err, result) {
-        if (err) {
-          done(null, null);
-        } else {
-          done(null, result);
-        }
-      });
-    })
-  );
+    passport.deserializeUser(function(id, done) {
+        models.users.get(id, function(err, user) {
+            done(null, user);
+        });
+    });
+
+    passport.use(new LocalStrategy({
+            usernameField: 'email',
+            passwordField: 'password'
+        },
+        function(email, password, done) {
+            models.users.validate(email, password, function(err, result) {
+                if (err) {
+                    done(null, null);
+                } else {
+                    done(null, result);
+                }
+            });
+        }));
 };
