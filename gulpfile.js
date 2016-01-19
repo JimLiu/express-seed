@@ -1,7 +1,5 @@
 var watchify = require('watchify'),
-    path = require('path'),
     gulp = require('gulp'),
-    gutil = require('gulp-util'),
     sourcemaps = require('gulp-sourcemaps'),
     cssmin = require('gulp-cssmin'),
     less = require('gulp-less'),
