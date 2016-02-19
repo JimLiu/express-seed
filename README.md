@@ -1,5 +1,5 @@
 express-seed
-============
+===========
 
 An empty website using nodejs + express + handlerbars + sass + bower + grunt + mysql.
 
@@ -20,18 +20,18 @@ An empty website using nodejs + express + handlerbars + sass + bower + grunt + m
 #### Installation
 Run the commands below in the project root directory.
 
-#####1. Install Gulp and Bower
+##### 1. Install Gulp and Bower
 
     $ sudo npm install -g gulp bower
 
-#####2. Install project dependencies
+##### 2. Install project dependencies
 
     $ npm install
     $ bower install
 
 ## Useful commands
 
-####Running web site
+#### Running web site
 
 To start the web server, run:
 
@@ -68,5 +68,3 @@ To access the local server, enter the following URL into your web browser:
     config.development.js   --> config file for development
     config.js               --> default config file. merge `config.*environment*.js` file
     gulpfile.js             --> gulp file
-
-    
